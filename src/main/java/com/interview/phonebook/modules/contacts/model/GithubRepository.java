@@ -29,6 +29,10 @@ public class GithubRepository {
         this.githubAccount = githubAccount;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -43,13 +47,6 @@ public class GithubRepository {
 
     public void setGithubAccount(GithubAccount githubAccount) {
         this.githubAccount = githubAccount;
-    }
-
-    @Override
-    public String toString() {
-        return "GithubRepository{" +
-                "name='" + name + '\'' +
-                '}';
     }
 }
 

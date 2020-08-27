@@ -2,7 +2,6 @@ package com.interview.phonebook.modules.contacts.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,13 +15,14 @@ public class GithubAccount {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-//    @JsonProperty("full_name")
-//    private String github;
+
+    @Column(name = "github_name")
+    private String name;
 
     @OneToMany(mappedBy = "githubAccount")
     private List<GithubRepository> repositories;
 
-    @OneToOne(mappedBy = "github")
+    @OneToOne(mappedBy = "githubAccount")
     private Contact contact;
 
 
@@ -32,8 +32,8 @@ public class GithubAccount {
 
     }
 
-    public GithubAccount(String github, List<GithubRepository> repositories, Contact contact) {
-//        this.github = github;
+    public GithubAccount(String name, List<GithubRepository> repositories, Contact contact) {
+        this.name = name;
         this.repositories = repositories;
         this.contact = contact;
     }
@@ -43,13 +43,13 @@ public class GithubAccount {
     }
 
 
-//    public String getGithub() {
-//        return github;
-//    }
-//
-//    public void setGithub(String github) {
-//        this.github = github;
-//    }
+    public String getGithub() {
+        return name;
+    }
+
+    public void setGithub(String name) {
+        this.name = name;
+    }
 
     public List<GithubRepository> getRepositories() {
         return repositories;

@@ -26,17 +26,17 @@ public class GithubAccountController {
         this.githubAccountService = githubAccountService;
     }
 
-    @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public
-    @ResponseBody
-     GithubAccount save(@RequestBody List<GithubRepository> repositories){
-
-        GithubAccount githubAccount=new GithubAccount();
-
-
-        return githubAccountService.saveGithubAccountService(githubAccount);
-
-    }
+//    @RequestMapping(value = "/add",method = RequestMethod.POST)
+//    public
+//    @ResponseBody
+//     GithubAccount save(@RequestBody List<GithubRepository> repositories){
+//
+//        GithubAccount githubAccount=new GithubAccount();
+//
+//
+//        return githubAccountService.saveGithubAccountService(githubAccount);
+//
+//    }
 
 
 }

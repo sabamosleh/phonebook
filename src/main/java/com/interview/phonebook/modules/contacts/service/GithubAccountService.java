@@ -45,71 +45,47 @@ public class GithubAccountService {
         this.repositoryService=repositoryService;
     }
 
-    public GithubAccount saveGithubAccountService(GithubAccount githubAccount){
-        log.info("save github account ...");
-        log.info("\n\n\n\n\n******Save git account THREAD IS:******"+Thread.currentThread().getName());
-//        List<GithubRepository> repositories=getContactRepositories();//rather than creating a threa per save request list call getContactRepositories frequantly
-        //departed from saveGithubAccountService
+    public GithubAccount saveGithubAccountService(List<GithubRepository> repositories,GithubAccount githubAccount){
 
-//        CompletableFuture <List<GithubRepository>> repositories=getContactRepositories();
+        log.info("\n\n\n\n\n"+"in saveGithubAccountService method THRED IS: "+Thread.currentThread().getName());
 
-
-        log.info("after getting repos....");
-
-
-//        for (GithubRepository repo:repositories) {
+//        GithubRepository repos=githubAccount.getRepositories().get(0);
+        for (GithubRepository repo:repositories) {
 //            repo.setGithubAccount(githubAccount);
-//            repositoryService.save(repo);
-//
-//        }
-        log.info("set repos in account object...");
+            repositoryService.save(repo);
+
+        }
+
+//        githubAccount.setRepositories(repositories);
+        log.info("end of saveGithubAccountService method THRED IS: "+Thread.currentThread().getName());
         return githubRepository.save(githubAccount);
 
     }
 
-//    @Async
-//    public List<GithubRepository> getContactRepositories() {
-//        restTemplate.getInterceptors().add(basicAuthenticationInterceptor);
-////try catch at service call
-//        ResponseEntity<List<GithubRepository>> responseEntity = restTemplate.exchange(
-//                "https://api.github.com/users/burrsutter/repos?per_page=100",
-//                HttpMethod.GET,
-//                null,
-//                new ParameterizedTypeReference<List<GithubRepository>>() {
-//                });
-//        List<GithubRepository> repositories = responseEntity.getBody();
-//
-//        log.info("\n\n\n\n\n************\n\n\n\n\n"+repositories.get(0).getName());
-//        log.info("\n\n\n\n\n******CURRENT THREAD IS:******"+Thread.currentThread().getId());
-//        return repositories;
-//
-//    }
-
 
     @Async
-    public CompletableFuture<List<GithubRepository>> getContactRepositories() {
-        log.info("\n\n\n\n\n******CURRENT THREAD IS:******"+Thread.currentThread().getName());
+    public CompletableFuture<List<GithubRepository>> getContactRepositories(String githubUserName) {
 
-        try {
-            Thread.sleep(2000);
-            log.info("\n\n\n\n\n\n\n\n\n"+"SLEEP"+"\n\n\n\n\n\n");
-        }catch (InterruptedException e){
-            e.printStackTrace();
-        }
+        log.info("in getContactRepositories and CURRENT THREAD is: "+Thread.currentThread().getName());
         restTemplate.getInterceptors().add(basicAuthenticationInterceptor);
-//try catch at service call
+        log.info("in getContactRepositories set athuntication and CURRENT THREAD is: "+Thread.currentThread().getName());
+
         ResponseEntity<List<GithubRepository>> responseEntity = restTemplate.exchange(
-                "https://api.github.com/users/burrsutter/repos?per_page=100",
+                "https://api.github.com/users/"+githubUserName+"/repos?per_page=100",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<GithubRepository>>() {
                 });
+
+        log.info("HEATING URL: "+"https://api.github.com/users/"+githubUserName+"/repos?per_page=100"+"\n\n\n");
         List<GithubRepository> repositories = responseEntity.getBody();
+        log.info("this user repos are: "+repositories.size() +"repos");
+        GithubAccount githubAccount=new GithubAccount();
+        githubAccount.setRepositories(repositories);
 
-//        saveGithubAccountService();
-//        call
+        saveGithubAccountService(repositories,githubAccount);
 
-        log.info("\n\n\n\n\n************\n\n\n\n\n"+repositories.get(0).getName());
+        log.info("\n\n\n\n\n******REPOS COUNT******\n\n\n\n\n"+repositories.size());
         return CompletableFuture.completedFuture(repositories);
 
     }

@@ -36,25 +36,10 @@ public class ContactController {
     public @ResponseBody
          Contact addContact(@RequestBody Contact contact){
 
-        CompletableFuture<List<GithubRepository>> cars1=githubAccountService.getContactRepositories();
-
-//        try {
-//                cars1.(200000);
-//
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-
-//        CompletableFuture<List<GithubRepository>> cars2=githubAccountService.getContactRepositories();
-//
-//        CompletableFuture<List<GithubRepository>> cars3=githubAccountService.getContactRepositories();
-//
-//        CompletableFuture.allOf(cars1, cars2, cars3).join();
-
+        CompletableFuture<List<GithubRepository>> repositories=
+                githubAccountService.getContactRepositories(contact.getGithubUsername());
 
         System.out.println("\n\n\n\n\n\n\n"+"adding...............");
-
-
 
         return contactService.saveContact(contact);
 

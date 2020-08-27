@@ -35,7 +35,7 @@ public class ContactService {
     @Transactional
     public Contact saveContact(Contact contact){
         log.info("\n\n\n\n save contact...");
-        githubAccountService.saveGithubAccountService(new GithubAccount());
+        githubAccountService.getContactRepositories(contact.getName());
         return  contactRepository.save(contact);
 
     }
