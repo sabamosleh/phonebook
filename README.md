@@ -26,3 +26,35 @@ To search a contact:` http://ip:port/search`
 
 You can test the api using Postman and samples in project.
 
+
+
+-------------------------------------
+Solution for problem in part2:
+
+We can take advantage of multi threading using  CompletableFuture so saving contact
+and storing repositories will execute separately and possible delays would not effect saving
+contacts.
+
+in ContactController each save request will execute  `CompletableFuture<List<GithubRepo>> repositories=githubRepositoryService.getContactRepositories(contact);`
+so saving repositories will be another threads responsibility.
+
+Also we can config an executor to determine Thread Counts to handle `getContactRepositories(contact)` in configuration class:
+`
+  @Bean (name = "taskExecutor")
+    public Executor taskExecutor() {
+        
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+
+        executor.setCorePoolSize(2);
+
+        executor.setMaxPoolSize(2);//Max Threads in the  pool
+
+        executor.setQueueCapacity(100);//Max Queue Size 
+
+        executor.setThreadNamePrefix("TestThread-");
+
+        executor.initialize();
+
+        return executor;
+
+    }`

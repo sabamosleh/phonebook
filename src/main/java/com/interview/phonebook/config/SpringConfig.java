@@ -35,8 +35,6 @@ public class SpringConfig {
     @Bean (name = "taskExecutor")
     public Executor taskExecutor() {
 
-//        LOGGER.debug("Creating Async Task Executor");
-
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         executor.setCorePoolSize(2);
