@@ -8,25 +8,27 @@ import javax.persistence.*;
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "github_repos")
-public class GithubRepository {
+public class GithubRepo {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @JsonProperty("full_name")
+
+    @JsonProperty("name")
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "github_account_fk")
-    private GithubAccount githubAccount;
+    @JoinColumn(name = "contact_id")
+    private Contact contact;
 
-    public GithubRepository() {
+
+    public GithubRepo() {
     }
 
-    public GithubRepository(String name, GithubAccount githubAccount) {
+    public GithubRepo(String name, Contact contact) {
         this.name = name;
-        this.githubAccount = githubAccount;
+        this.contact = contact;
     }
 
     public Long getId() {
@@ -41,12 +43,13 @@ public class GithubRepository {
         this.name = name;
     }
 
-    public GithubAccount getGithubAccount() {
-        return githubAccount;
+
+    public Contact getContact() {
+        return contact;
     }
 
-    public void setGithubAccount(GithubAccount githubAccount) {
-        this.githubAccount = githubAccount;
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }
 

@@ -1,9 +1,9 @@
 package com.interview.phonebook.modules.contacts.controller;
 
 import com.interview.phonebook.modules.contacts.model.Contact;
-import com.interview.phonebook.modules.contacts.model.GithubRepository;
 import com.interview.phonebook.modules.contacts.service.ContactService;
-import com.interview.phonebook.modules.contacts.service.GithubAccountService;
+import com.interview.phonebook.modules.contacts.model.GithubRepo;
+import com.interview.phonebook.modules.contacts.service.GithubRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
@@ -21,25 +21,23 @@ import java.util.concurrent.CompletableFuture;
 public class ContactController {
 
     private ContactService contactService;
-    private GithubAccountService githubAccountService;
+    private GithubRepositoryService githubRepositoryService;
 
     @Autowired
-    public ContactController(ContactService contactService, GithubAccountService githubAccountService){
-
-        this.contactService=contactService;
-        this.githubAccountService=githubAccountService;
-
+    public ContactController(ContactService contactService, GithubRepositoryService githubRepositoryService) {
+        this.contactService = contactService;
+        this.githubRepositoryService = githubRepositoryService;
     }
+
+
 
 
     @RequestMapping(value = "/contacts",method = RequestMethod.PUT)
     public @ResponseBody
-         Contact addContact(@RequestBody Contact contact){
+    Contact addContact(@RequestBody Contact contact){
 
-        CompletableFuture<List<GithubRepository>> repositories=
-                githubAccountService.getContactRepositories(contact.getGithubUsername());
-
-        System.out.println("\n\n\n\n\n\n\n"+"adding...............");
+        CompletableFuture<List<GithubRepo>> repositories=
+                githubRepositoryService.getContactRepositories(contact);
 
         return contactService.saveContact(contact);
 
