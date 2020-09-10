@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -47,23 +48,35 @@ public class GithubRepositoryService {
 
     }
 
-    private List<GithubRepo> getReposPerPage(Contact contact){
+    private List<GithubRepo> getReposPerPage(Contact contact,int pageNumber,List<GithubRepo> repositories){
 
 
         restTemplate.getInterceptors().add(basicAuthenticationInterceptor);
-        log.info("in getContactRepositories set athuntication and CURRENT THREAD is: "+Thread.currentThread().getName());
+        log.info("in getContactRepositories set authentication and CURRENT THREAD is: "+Thread.currentThread().getName());
         ResponseEntity<List<GithubRepo>> responseEntity = restTemplate.exchange(
-                "https://api.github.com/users/"+contact.getGithubUsername()+"/repos?per_page=100",
+                "https://api.github.com/users/"+contact.getGithubUsername()+"/repos?per_page=100&page="+String.valueOf(pageNumber)+"",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<GithubRepo>>() {
                 });
 
-        log.info("HEATING URL: "+"https://api.github.com/users/"+contact.getGithubUsername()+"/repos?per_page=100"+"\n\n\n");
-        log.info("\n\n\n\n"+responseEntity.getHeaders());
-        log.info("\n\n\n\n"+responseEntity.getBody());
-        List<GithubRepo> repositories = responseEntity.getBody();
+        log.info("HEATING URL: "+"https://api.github.com/users/"+contact.getGithubUsername()+"/repos?per_page=100&page="+String.valueOf(pageNumber)+""+"\n\n\n");
+
+        repositories=(responseEntity.getBody());
+
+
+
+        if(repositories.size()==100){
+            pageNumber+=1;
+            repositories.addAll(getReposPerPage(contact,pageNumber,repositories));
+        }
+
         log.info("this user repos are: "+repositories.size() +"repos");
+
+        for (GithubRepo repo:repositories) {
+            repo.setContact(contact);
+            saveGithubRepServie(repo);
+        }
 
         return repositories;
 
@@ -71,23 +84,19 @@ public class GithubRepositoryService {
 
 
     @Async
-    public CompletableFuture<List<GithubRepo>> getContactRepositories(Contact contact) {
+    public CompletableFuture<List<GithubRepo>> getContactRepositories(Contact contact ) {
+        int pageNumber=1;
+        List<GithubRepo> repositories=null;
 
         log.info("in getContactRepositories and CURRENT THREAD is: "+Thread.currentThread().getName());
 
-        List<GithubRepo> repositories=getReposPerPage(contact);
-
-        if (repositories.size()==100){
-
-            repositories.addAll(getReposPerPage(contact));
-
-        }
+         repositories.addAll(getReposPerPage(contact,pageNumber,repositories));
 
 
-        for (GithubRepo repo:repositories) {
-            repo.setContact(contact);
-            saveGithubRepServie(repo);
-        }
+//        for (GithubRepo repo:repositories) {
+//            repo.setContact(contact);
+//            saveGithubRepServie(repo);
+//        }
 
 
         log.info("\n\n\n\n\n******REPOS COUNT******\n\n\n\n\n"+repositories.size());

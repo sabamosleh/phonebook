@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,11 +21,12 @@ public class Contact implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @NotNull
     private String name;
 
     private String phoneNumber;
 
-//    @Column(unique = true)
+    @Column(unique = true)
     @Email
     private String email;
 
@@ -33,7 +35,7 @@ public class Contact implements Serializable {
     @OneToMany(mappedBy = "contact")
     private List<GithubRepo> repositories;
 
-
+    @NotNull
     @JsonProperty("github")
     private String githubUsername;
 
@@ -48,7 +50,6 @@ public class Contact implements Serializable {
         this.email = email;
         this.organization = organization;
         this.githubUsername=githubUsername;
-//        this.githubAccount = githubAccount;
     }
 
 
